@@ -206,6 +206,9 @@ ShaderGLES3::Version *ShaderGLES3::get_current_version() {
 #ifdef GLES_OVER_GL
 	strings.push_back("#version 330\n");
 	strings.push_back("#define GLES_OVER_GL\n");
+#elif GLES3_OVER_GL
+	strings.push_back("#version 330\n");
+	strings.push_back("#define GLES3_OVER_GL\n");
 #else
 	strings.push_back("#version 300 es\n");
 #endif
@@ -271,7 +274,7 @@ ShaderGLES3::Version *ShaderGLES3::get_current_version() {
 	//vertex precision is high
 	strings.push_back("precision highp float;\n");
 	strings.push_back("precision highp int;\n");
-#ifndef GLES_OVER_GL
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 	strings.push_back("precision highp sampler2D;\n");
 	strings.push_back("precision highp samplerCube;\n");
 	strings.push_back("precision highp sampler2DArray;\n");
@@ -359,7 +362,7 @@ ShaderGLES3::Version *ShaderGLES3::get_current_version() {
 	//fragment precision is medium
 	strings.push_back("precision highp float;\n");
 	strings.push_back("precision highp int;\n");
-#ifndef GLES_OVER_GL
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 	strings.push_back("precision highp sampler2D;\n");
 	strings.push_back("precision highp samplerCube;\n");
 	strings.push_back("precision highp sampler2DArray;\n");

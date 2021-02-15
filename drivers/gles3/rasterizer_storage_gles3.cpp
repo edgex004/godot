@@ -103,7 +103,7 @@
 
 #define _GL_TEXTURE_EXTERNAL_OES 0x8D65
 
-#ifndef GLES_OVER_GL
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 #define glClearDepth glClearDepthf
 #endif
 
@@ -122,7 +122,7 @@ void glGetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, GLvoid 
 
 void glTexStorage2DCustom(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type) {
 
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 
 	for (int i = 0; i < levels; i++) {
 		glTexImage2D(target, i, internalformat, width, height, 0, format, type, NULL);
@@ -150,7 +150,7 @@ Ref<Image> RasterizerStorageGLES3::_get_gl_image_and_format(const Ref<Image> &p_
 	switch (p_format) {
 
 		case Image::FORMAT_L8: {
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 			r_gl_internal_format = GL_R8;
 			r_gl_format = GL_RED;
 			r_gl_type = GL_UNSIGNED_BYTE;
@@ -161,7 +161,7 @@ Ref<Image> RasterizerStorageGLES3::_get_gl_image_and_format(const Ref<Image> &p_
 #endif
 		} break;
 		case Image::FORMAT_LA8: {
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 			r_gl_internal_format = GL_RG8;
 			r_gl_format = GL_RG;
 			r_gl_type = GL_UNSIGNED_BYTE;
@@ -629,7 +629,7 @@ void RasterizerStorageGLES3::texture_allocate(RID p_texture, int p_width, int p_
 		p_flags &= ~VS::TEXTURE_FLAG_MIPMAPS; // no mipies for video
 	}
 
-#ifndef GLES_OVER_GL
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 	switch (p_format) {
 		case Image::FORMAT_RF:
 		case Image::FORMAT_RGF:
@@ -892,7 +892,7 @@ void RasterizerStorageGLES3::texture_set_data(RID p_texture, const Ref<Image> &p
 	}
 
 //set swizle for older format compatibility
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 	switch (texture->format) {
 
 		case Image::FORMAT_L8: {
@@ -1235,7 +1235,7 @@ Ref<Image> RasterizerStorageGLES3::texture_get_data(RID p_texture, int p_layer) 
 		return Ref<Image>(img);
 	}
 
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 
 	Image::Format real_format;
 	GLenum gl_format;
@@ -1833,7 +1833,7 @@ void RasterizerStorageGLES3::sky_set_texture(RID p_sky, RID p_panorama, int p_ra
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(texture->target, texture->tex_id);
 	glTexParameteri(texture->target, GL_TEXTURE_BASE_LEVEL, 0);
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 	glTexParameteri(texture->target, GL_TEXTURE_MAX_LEVEL, int(Math::floor(Math::log(float(texture->width)) / Math::log(2.0f))));
 	glGenerateMipmap(texture->target);
 #else
@@ -1842,7 +1842,7 @@ void RasterizerStorageGLES3::sky_set_texture(RID p_sky, RID p_panorama, int p_ra
 	// Need Mipmaps regardless of whether they are set in import by user
 	glTexParameterf(texture->target, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameterf(texture->target, GL_TEXTURE_WRAP_T, GL_REPEAT);
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 	glTexParameterf(texture->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 #else
 	glTexParameterf(texture->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -2012,7 +2012,7 @@ void RasterizerStorageGLES3::sky_set_texture(RID p_sky, RID p_panorama, int p_ra
 
 			glBindFramebuffer(GL_FRAMEBUFFER, tmp_fb2);
 
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 			if (j < 3) {
 #else
 			if (j == 0) {
@@ -2141,7 +2141,7 @@ void RasterizerStorageGLES3::sky_set_texture(RID p_sky, RID p_panorama, int p_ra
 			glTexImage2D(GL_TEXTURE_2D, 0, internal_format, size, size * 2, 0, format, type, NULL);
 			glBindFramebuffer(GL_FRAMEBUFFER, tmp_fb2);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tmp_tex, 0);
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 			if (lod < 3) {
 #else
 			if (lod == 0) {
@@ -4015,7 +4015,7 @@ PoolVector<uint8_t> RasterizerStorageGLES3::mesh_surface_get_array(RID p_mesh, i
 	ret.resize(surface->array_byte_size);
 	glBindBuffer(GL_ARRAY_BUFFER, surface->vertex_id);
 
-#if defined(GLES_OVER_GL) || defined(__EMSCRIPTEN__)
+#if defined(GLES_OVER_GL) || defined(__EMSCRIPTEN__) || defined (GLES3_OVER_GL)
 	{
 		PoolVector<uint8_t>::Write w = ret.write();
 		glGetBufferSubData(GL_ARRAY_BUFFER, 0, surface->array_byte_size, w.ptr());
@@ -4047,7 +4047,7 @@ PoolVector<uint8_t> RasterizerStorageGLES3::mesh_surface_get_index_array(RID p_m
 	if (surface->index_array_byte_size > 0) {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, surface->index_id);
 
-#if defined(GLES_OVER_GL) || defined(__EMSCRIPTEN__)
+#if defined(GLES_OVER_GL) || defined(__EMSCRIPTEN__) || defined (GLES3_OVER_GL)
 		{
 			PoolVector<uint8_t>::Write w = ret.write();
 			glGetBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, surface->index_array_byte_size, w.ptr());
@@ -4109,7 +4109,7 @@ Vector<PoolVector<uint8_t> > RasterizerStorageGLES3::mesh_surface_get_blend_shap
 		ret.resize(mesh->surfaces[p_surface]->array_byte_size);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->surfaces[p_surface]->blend_shapes[i].vertex_id);
 
-#if defined(GLES_OVER_GL) || defined(__EMSCRIPTEN__)
+#if defined(GLES_OVER_GL) || defined(__EMSCRIPTEN__) || defined (GLES3_OVER_GL)
 		{
 			PoolVector<uint8_t>::Write w = ret.write();
 			glGetBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, mesh->surfaces[p_surface]->array_byte_size, w.ptr());
@@ -6558,7 +6558,7 @@ AABB RasterizerStorageGLES3::particles_get_current_aabb(RID p_particles) {
 	const float *data;
 	glBindBuffer(GL_ARRAY_BUFFER, particles->particle_buffers[0]);
 
-#if defined(GLES_OVER_GL) || defined(__EMSCRIPTEN__)
+#if defined(GLES_OVER_GL) || defined(__EMSCRIPTEN__) || defined (GLES3_OVER_GL)
 	PoolVector<uint8_t> vector;
 	vector.resize(particles->amount * 16 * 6);
 	{
@@ -6586,7 +6586,7 @@ AABB RasterizerStorageGLES3::particles_get_current_aabb(RID p_particles) {
 			aabb.expand_to(pos);
 	}
 
-#if defined(GLES_OVER_GL) || defined(__EMSCRIPTEN__)
+#if defined(GLES_OVER_GL) || defined(__EMSCRIPTEN__) || defined (GLES3_OVER_GL)
 	r.release();
 	vector = PoolVector<uint8_t>();
 #else
@@ -8256,7 +8256,7 @@ void RasterizerStorageGLES3::initialize() {
 	config.etc_supported = config.extensions.has("GL_OES_compressed_ETC1_RGB8_texture");
 	config.latc_supported = config.extensions.has("GL_EXT_texture_compression_latc");
 	config.bptc_supported = config.extensions.has("GL_ARB_texture_compression_bptc");
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 	config.etc2_supported = false;
 	config.s3tc_supported = true;
 	config.rgtc_supported = true; //RGTC - core since OpenGL version 3.0
@@ -8433,7 +8433,7 @@ void RasterizerStorageGLES3::initialize() {
 	shaders.cubemap_filter.set_conditional(CubemapFilterShaderGLES3::LOW_QUALITY, !ggx_hq);
 	shaders.particles.init();
 
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 	glEnable(_EXT_TEXTURE_CUBE_MAP_SEAMLESS);
 #endif
 

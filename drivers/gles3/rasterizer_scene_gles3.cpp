@@ -37,7 +37,7 @@
 #include "servers/camera/camera_feed.h"
 #include "servers/visual/visual_server_raster.h"
 
-#ifndef GLES_OVER_GL
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 #define glClearDepth glClearDepthf
 #endif
 
@@ -3081,7 +3081,7 @@ void RasterizerSceneGLES3::_setup_reflections(RID *p_reflection_probe_cull_resul
 
 void RasterizerSceneGLES3::_copy_screen(bool p_invalidate_color, bool p_invalidate_depth) {
 
-#ifndef GLES_OVER_GL
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 	if (p_invalidate_color) {
 
 		GLenum attachments[2] = {
@@ -5242,7 +5242,7 @@ void RasterizerSceneGLES3::initialize() {
 		glGenVertexArrays(1, &state.immediate_array);
 	}
 
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 	//"desktop" opengl needs this.
 	glEnable(GL_PROGRAM_POINT_SIZE);
 

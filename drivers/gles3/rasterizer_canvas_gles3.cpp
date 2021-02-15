@@ -35,7 +35,7 @@
 #include "rasterizer_scene_gles3.h"
 #include "servers/visual/visual_server_raster.h"
 
-#ifndef GLES_OVER_GL
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 #define glClearDepth glClearDepthf
 #endif
 
@@ -401,7 +401,7 @@ void RasterizerCanvasGLES3::_draw_polygon(const int *p_indices, int p_index_coun
 
 	//bind the indices buffer.
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.polygon_index_buffer);
-#ifndef GLES_OVER_GL
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 	// Orphan the buffer to avoid CPU/GPU sync points caused by glBufferSubData
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.polygon_index_buffer_size, NULL, GL_DYNAMIC_DRAW);
 #endif
@@ -427,7 +427,7 @@ void RasterizerCanvasGLES3::_draw_generic(GLuint p_primitive, int p_vertex_count
 	glBindVertexArray(data.polygon_buffer_pointer_array);
 	glBindBuffer(GL_ARRAY_BUFFER, data.polygon_buffer);
 
-#ifndef GLES_OVER_GL
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 	// Orphan the buffer to avoid CPU/GPU sync points caused by glBufferSubData
 	glBufferData(GL_ARRAY_BUFFER, data.polygon_buffer_size, NULL, GL_DYNAMIC_DRAW);
 #endif
@@ -480,7 +480,7 @@ void RasterizerCanvasGLES3::_draw_generic_indices(GLuint p_primitive, const int 
 	glBindVertexArray(data.polygon_buffer_pointer_array);
 	glBindBuffer(GL_ARRAY_BUFFER, data.polygon_buffer);
 
-#ifndef GLES_OVER_GL
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 	// Orphan the buffer to avoid CPU/GPU sync points caused by glBufferSubData
 	glBufferData(GL_ARRAY_BUFFER, data.polygon_buffer_size, NULL, GL_DYNAMIC_DRAW);
 #endif
@@ -533,7 +533,7 @@ void RasterizerCanvasGLES3::_draw_generic_indices(GLuint p_primitive, const int 
 
 	//bind the indices buffer.
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.polygon_index_buffer);
-#ifndef GLES_OVER_GL
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 	// Orphan the buffer to avoid CPU/GPU sync points caused by glBufferSubData
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.polygon_index_buffer_size, NULL, GL_DYNAMIC_DRAW);
 #endif
@@ -597,7 +597,7 @@ void RasterizerCanvasGLES3::_draw_gui_primitive(int p_points, const Vector2 *p_v
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, data.polygon_buffer);
-#ifndef GLES_OVER_GL
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 	// Orphan the buffer to avoid CPU/GPU sync points caused by glBufferSubData
 	glBufferData(GL_ARRAY_BUFFER, data.polygon_buffer_size, NULL, GL_DYNAMIC_DRAW);
 #endif
@@ -722,14 +722,14 @@ void RasterizerCanvasGLES3::_canvas_item_render_commands(Item *p_item, Item *cur
 						Vector2(line->to.x, line->to.y)
 					};
 
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 					if (line->antialiased)
 						glEnable(GL_LINE_SMOOTH);
 #endif
 					//glLineWidth(line->width);
 					_draw_gui_primitive(2, verts, NULL, NULL);
 
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 					if (line->antialiased)
 						glDisable(GL_LINE_SMOOTH);
 #endif
@@ -747,7 +747,7 @@ void RasterizerCanvasGLES3::_canvas_item_render_commands(Item *p_item, Item *cur
 
 					//glLineWidth(line->width);
 					_draw_gui_primitive(4, verts, NULL, NULL);
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 					if (line->antialiased) {
 						glEnable(GL_LINE_SMOOTH);
 						for (int j = 0; j < 4; j++) {
@@ -772,7 +772,7 @@ void RasterizerCanvasGLES3::_canvas_item_render_commands(Item *p_item, Item *cur
 				if (pline->triangles.size()) {
 
 					_draw_generic(GL_TRIANGLE_STRIP, pline->triangles.size(), pline->triangles.ptr(), NULL, pline->triangle_colors.ptr(), pline->triangle_colors.size() == 1);
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 					glEnable(GL_LINE_SMOOTH);
 					if (pline->multiline) {
 						//needs to be different
@@ -783,7 +783,7 @@ void RasterizerCanvasGLES3::_canvas_item_render_commands(Item *p_item, Item *cur
 #endif
 				} else {
 
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 					if (pline->antialiased)
 						glEnable(GL_LINE_SMOOTH);
 #endif
@@ -805,7 +805,7 @@ void RasterizerCanvasGLES3::_canvas_item_render_commands(Item *p_item, Item *cur
 						_draw_generic(GL_LINE_STRIP, pline->lines.size(), pline->lines.ptr(), NULL, pline->line_colors.ptr(), pline->line_colors.size() == 1);
 					}
 
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 					if (pline->antialiased)
 						glDisable(GL_LINE_SMOOTH);
 #endif
@@ -975,7 +975,7 @@ void RasterizerCanvasGLES3::_canvas_item_render_commands(Item *p_item, Item *cur
 				}
 
 				_draw_polygon(polygon->indices.ptr(), polygon->count, polygon->points.size(), polygon->points.ptr(), polygon->uvs.ptr(), polygon->colors.ptr(), polygon->colors.size() == 1, polygon->bones.ptr(), polygon->weights.ptr());
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 				if (polygon->antialiased) {
 					glEnable(GL_LINE_SMOOTH);
 					if (polygon->antialiasing_use_indices) {
@@ -2351,7 +2351,7 @@ RasterizerCanvasGLES3::RasterizerCanvasGLES3() {
 	// Not needed (a priori) on GLES devices
 	use_nvidia_rect_workaround = false;
 
-#ifdef GLES_OVER_GL
+#if defined (GLES_OVER_GL) || defined (GLES3_OVER_GL)
 	use_nvidia_rect_workaround = GLOBAL_GET("rendering/quality/2d/use_nvidia_rect_flicker_workaround");
 #endif
 }

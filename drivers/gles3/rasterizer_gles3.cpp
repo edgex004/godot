@@ -76,7 +76,7 @@ RasterizerScene *RasterizerGLES3::get_scene() {
 #define strcpy strcpy_s
 #endif
 
-#ifdef GLAD_ENABLED
+#if defined (GLAD_ENABLED) || defined (GLES3_GLAD_ENABLED)
 // Restricting to GLAD as only used in initialize() with GLAD_GL_ARB_debug_output
 static void GLAPIENTRY _gl_debug_print(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const GLvoid *userParam) {
 
@@ -122,7 +122,7 @@ static void GLAPIENTRY _gl_debug_print(GLenum source, GLenum type, GLuint id, GL
 
 	ERR_PRINTS(output);
 }
-#endif // GLAD_ENABLED
+#endif // defined (GLAD_ENABLED) || defined (GLES3_GLAD_ENABLED)
 
 typedef void (*DEBUGPROCARB)(GLenum source,
 		GLenum type,
@@ -136,7 +136,7 @@ typedef void (*DebugMessageCallbackARB)(DEBUGPROCARB callback, const void *userP
 
 Error RasterizerGLES3::is_viable() {
 
-#ifdef GLAD_ENABLED
+#if defined (GLAD_ENABLED) || defined (GLES3_GLAD_ENABLED)
 	if (!gladLoadGL()) {
 		ERR_PRINT("Error initializing GLAD");
 		return ERR_UNAVAILABLE;
@@ -151,7 +151,7 @@ Error RasterizerGLES3::is_viable() {
 		return ERR_UNAVAILABLE;
 	}
 
-#endif // GLAD_ENABLED
+#endif // defined (GLAD_ENABLED) || defined (GLES3_GLAD_ENABLED)
 	return OK;
 }
 
@@ -159,7 +159,7 @@ void RasterizerGLES3::initialize() {
 
 	print_verbose("Using GLES3 video driver");
 
-#ifdef GLAD_ENABLED
+#if defined (GLAD_ENABLED) || defined (GLES3_GLAD_ENABLED)
 	if (OS::get_singleton()->is_stdout_verbose()) {
 		if (GLAD_GL_ARB_debug_output) {
 			glEnable(_EXT_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
@@ -169,7 +169,7 @@ void RasterizerGLES3::initialize() {
 			print_line("OpenGL debugging not supported!");
 		}
 	}
-#endif // GLAD_ENABLED
+#endif // defined (GLAD_ENABLED) || defined (GLES3_GLAD_ENABLED)
 
 	/* // For debugging
 	if (GLAD_GL_ARB_debug_output) {

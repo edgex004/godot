@@ -64,7 +64,7 @@ void main() {
 
 #define M_PI 3.14159265359
 
-#if !defined(USE_GLES_OVER_GL)
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 precision mediump float;
 #endif
 

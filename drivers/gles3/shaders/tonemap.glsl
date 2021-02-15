@@ -20,7 +20,7 @@ void main() {
 /* clang-format off */
 [fragment]
 
-#if !defined(GLES_OVER_GL)
+#if ! defined (GLES_OVER_GL) && ! defined (GLES3_OVER_GL)
 precision mediump float;
 #endif
 /* clang-format on */
