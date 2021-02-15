@@ -327,8 +327,8 @@ def configure(env):
         env.ParseConfig("pkg-config zlib --cflags --libs")
 
     env.Prepend(CPPPATH=["#platform/x11"])
-    env.Append(CPPDEFINES=["X11_ENABLED", "UNIX_ENABLED", "OPENGL_ENABLED", "GLES_ENABLED"])
-    env.Append(LIBS=["GL", "pthread"])
+    env.Append(CPPDEFINES=["X11_ENABLED", "UNIX_ENABLED", "GLES_ENABLED"])
+    env.Append(LIBS=["GLESv2","GL", "pthread"])
 
     if platform.system() == "Linux":
         env.Append(LIBS=["dl"])
