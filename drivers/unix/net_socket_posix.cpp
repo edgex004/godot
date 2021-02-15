@@ -675,7 +675,7 @@ void NetSocketPosix::set_reuse_address_enabled(bool p_enabled) {
 
 // On Windows, enabling SO_REUSEADDR actually would also enable reuse port, very bad on TCP. Denying...
 // Windows does not have this option, SO_REUSEADDR in this magical world means SO_REUSEPORT
-#ifndef WINDOWS_ENABLED
+#if ! defined (WINDOWS_ENABLED) && ! defined (PANDORA_ENABLED)
 	int par = p_enabled ? 1 : 0;
 	if (setsockopt(_sock, SOL_SOCKET, SO_REUSEADDR, SOCK_CBUF(&par), sizeof(int)) < 0) {
 		WARN_PRINT("Unable to set socket REUSEADDR option!");
@@ -687,7 +687,7 @@ void NetSocketPosix::set_reuse_port_enabled(bool p_enabled) {
 	ERR_FAIL_COND(!is_open());
 
 // See comment above...
-#ifdef WINDOWS_ENABLED
+#if defined (WINDOWS_ENABLED) || defined (PANDORA_ENABLED)
 #define SO_REUSEPORT SO_REUSEADDR
 #endif
 	int par = p_enabled ? 1 : 0;
