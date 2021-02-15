@@ -214,6 +214,10 @@ ShaderGLES3::Version *ShaderGLES3::get_current_version() {
 	strings.push_back("#define ANDROID_ENABLED\n");
 #endif
 
+#if defined (PANDORA_ENABLED)
+	strings.push_back("#define PANDORA_ENABLED\n");
+#endif
+
 	for (int i = 0; i < custom_defines.size(); i++) {
 
 		strings.push_back(custom_defines[i].get_data());
