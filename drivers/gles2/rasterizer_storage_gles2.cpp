@@ -97,10 +97,13 @@ GLuint RasterizerStorageGLES2::system_fbo = 0;
 //void *glRenderbufferStorageMultisampleAPPLE;
 //void *glResolveMultisampleFramebufferAPPLE;
 #define glRenderbufferStorageMultisample glRenderbufferStorageMultisampleAPPLE
+
 #elif defined(PANDORA_ENABLED)
+
 #include <GLES2/gl2ext.h>
-//#define glRenderbufferStorageMultisample( target, samples, ...) glRenderbufferStorage (target, __VA_ARGS__)
-//#define glFramebufferTexture2DMultisample( target, attachment, textarget, texture, level, ...) glFramebufferTexture2D (target, attachment, textarget, texture, level)
+#define glRenderbufferStorageMultisample( target, samples, ...) glRenderbufferStorage (target, __VA_ARGS__)
+#define glFramebufferTexture2DMultisample( target, attachment, textarget, texture, level, ...) glFramebufferTexture2D (target, attachment, textarget, texture, level)
+
 #elif defined (ANDROID_ENABLED)
 
 #include <GLES2/gl2ext.h>
