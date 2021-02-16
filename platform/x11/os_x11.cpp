@@ -250,7 +250,9 @@ Error OS_X11::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 
 	while (true) {
 		if (use_gl3) {
-			if (RasterizerGLES3::is_viable() == OK && gles3_available) {
+			print_line("Godot using GLES3.");
+			if (RasterizerGLES3::is_viable() == OK) {
+				print_line("GLES3 is OK.");
 				RasterizerGLES3::register_config();
 				RasterizerGLES3::make_current();
 				break;
@@ -265,7 +267,9 @@ Error OS_X11::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 				}
 			}
 		} else {
+			print_line("Godot using GLES2.");
 			if (RasterizerGLES2::is_viable() == OK) {
+				print_line("GLES2 is OK.");
 				RasterizerGLES2::register_config();
 				RasterizerGLES2::make_current();
 				break;
