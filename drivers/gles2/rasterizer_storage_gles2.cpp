@@ -97,7 +97,11 @@ GLuint RasterizerStorageGLES2::system_fbo = 0;
 //void *glRenderbufferStorageMultisampleAPPLE;
 //void *glResolveMultisampleFramebufferAPPLE;
 #define glRenderbufferStorageMultisample glRenderbufferStorageMultisampleAPPLE
-#elif defined (ANDROID_ENABLED) || defined (PANDORA_ENABLED)
+#elif defined(PANDORA_ENABLED)
+#include <GLES2/gl2ext.h>
+//#define glRenderbufferStorageMultisample( target, samples, ...) glRenderbufferStorage (target, __VA_ARGS__)
+//#define glFramebufferTexture2DMultisample( target, attachment, textarget, texture, level, ...) glFramebufferTexture2D (target, attachment, textarget, texture, level)
+#elif defined (ANDROID_ENABLED)
 
 #include <GLES2/gl2ext.h>
 PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC glRenderbufferStorageMultisampleEXT;
@@ -5928,7 +5932,7 @@ void RasterizerStorageGLES2::initialize() {
 	//void *gles2_lib = dlopen(NULL, RTLD_LAZY);
 	//glRenderbufferStorageMultisampleAPPLE = dlsym(gles2_lib, "glRenderbufferStorageMultisampleAPPLE");
 	//glResolveMultisampleFramebufferAPPLE = dlsym(gles2_lib, "glResolveMultisampleFramebufferAPPLE");
-#elif defined (ANDROID_ENABLED) || defined (PANDORA_ENABLED)
+#elif defined (ANDROID_ENABLED)
 
 	void *gles2_lib = dlopen("libGLESv2.so", RTLD_LAZY);
 	glRenderbufferStorageMultisampleEXT = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC)dlsym(gles2_lib, "glRenderbufferStorageMultisampleEXT");
