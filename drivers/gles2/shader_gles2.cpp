@@ -265,7 +265,9 @@ ShaderGLES2::Version *ShaderGLES2::get_current_version() {
 #endif
 
 	v.vert_id = glCreateShader(GL_VERTEX_SHADER);
-	const char** temp_string = &strings[0]
+	
+	const char* temp_string_ptr = &*strings[0];
+	const char** temp_string_ptr_ptr = &temp_string_ptr;
 	glShaderSource(v.vert_id, strings.size(), temp_string, NULL);
 	glCompileShader(v.vert_id);
 
