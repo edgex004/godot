@@ -244,7 +244,46 @@ Error OS_X11::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 	*/
 
 // maybe contextgl wants to be in charge of creating the window
-#if defined(OPENGL_ENABLED)
+#if defined (PANDORA_ENABLED)
+	bool use_gl3 = GLOBAL_GET("rendering/quality/driver/driver_name") == "GLES3";
+	bool gl_initialization_error = false;
+
+	while (true) {
+		if (use_gl3) {
+			if (RasterizerGLES3::is_viable() == OK && gles3_available) {
+				RasterizerGLES3::register_config();
+				RasterizerGLES3::make_current();
+				break;
+			} else {
+				if (GLOBAL_GET("rendering/quality/driver/fallback_to_gles2")) {
+					p_video_driver = VIDEO_DRIVER_GLES2;
+					use_gl3 = false;
+					continue;
+				} else {
+					gl_initialization_error = true;
+					break;
+				}
+			}
+		} else {
+			if (RasterizerGLES2::is_viable() == OK) {
+				RasterizerGLES2::register_config();
+				RasterizerGLES2::make_current();
+				break;
+			} else {
+				gl_initialization_error = true;
+				break;
+			}
+		}
+	}
+
+	if (gl_initialization_error) {
+		OS::get_singleton()->alert("Your device does not support any of the supported OpenGL versions.",
+				"Unable to initialize Video driver");
+		return ERR_UNAVAILABLE;
+	}
+
+	video_driver_index = p_video_driver;
+#elif defined(OPENGL_ENABLED)
 	if (getenv("DRI_PRIME") == NULL) {
 		int use_prime = -1;
 
