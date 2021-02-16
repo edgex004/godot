@@ -328,6 +328,7 @@ def configure(env):
 
     env.Prepend(CPPPATH=["#platform/x11"])
     env.Append(CPPDEFINES=["X11_ENABLED", "UNIX_ENABLED", "GLES_ENABLED"])
+    env.Append(LIBS=["GLESv2","GL", "EGL", "pthread", "rt"])
 
     if platform.system() == "Linux":
         env.Append(LIBS=["dl"])
