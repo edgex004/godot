@@ -268,7 +268,7 @@ ShaderGLES2::Version *ShaderGLES2::get_current_version() {
 	
 	const char* temp_string_ptr = &*strings[0];
 	const char** temp_string_ptr_ptr = &temp_string_ptr;
-	glShaderSource(v.vert_id, strings.size(), temp_string, NULL);
+	glShaderSource(v.vert_id, strings.size(), temp_string_ptr_ptr, NULL);
 	glCompileShader(v.vert_id);
 
 	GLint status;
@@ -344,7 +344,9 @@ ShaderGLES2::Version *ShaderGLES2::get_current_version() {
 #endif
 
 	v.frag_id = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(v.frag_id, strings.size(), &strings[0], NULL);
+	temp_string_ptr = &*strings[0];
+	temp_string_ptr_ptr = &temp_string_ptr;
+	glShaderSource(v.frag_id, strings.size(), temp_string_ptr_ptr, NULL);
 	glCompileShader(v.frag_id);
 
 	glGetShaderiv(v.frag_id, GL_COMPILE_STATUS, &status);
