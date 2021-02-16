@@ -265,7 +265,8 @@ ShaderGLES2::Version *ShaderGLES2::get_current_version() {
 #endif
 
 	v.vert_id = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(v.vert_id, strings.size(), &strings[0], NULL);
+	const char** temp_string = &strings[0]
+	glShaderSource(v.vert_id, strings.size(), temp_string, NULL);
 	glCompileShader(v.vert_id);
 
 	GLint status;
