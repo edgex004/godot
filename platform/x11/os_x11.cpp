@@ -227,8 +227,13 @@ Error OS_X11::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 		XFree(imvalret);
 	}
 
-/*
-	char* windowid = getenv("GODOT_WINDOWID");
+
+
+
+// maybe contextgl wants to be in charge of creating the window
+#if defined (PANDORA_ENABLED)
+
+    char* windowid = getenv("GODOT_WINDOWID");
 	if (windowid) {
 
 		//freopen("/home/punto/stdout", "w", stdout);
@@ -241,10 +246,8 @@ Error OS_X11::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 		current_videomode.width = xwa.width;
 		current_videomode.height = xwa.height;
 	};
-	*/
 
-// maybe contextgl wants to be in charge of creating the window
-#if defined (PANDORA_ENABLED)
+
 	bool use_gl3 = (OS::get_singleton()->get_current_video_driver() == 0);
 	bool gl_initialization_error = false;
 
