@@ -245,7 +245,7 @@ Error OS_X11::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 
 // maybe contextgl wants to be in charge of creating the window
 #if defined (PANDORA_ENABLED)
-	bool use_gl3 = GLOBAL_GET("rendering/quality/driver/driver_name") == "GLES3";
+	bool use_gl3 = (OS::get_singleton()->get_current_video_driver() == 0);
 	bool gl_initialization_error = false;
 
 	while (true) {
